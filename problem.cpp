@@ -32,35 +32,43 @@ N is an integer within the range [1..2,147,483,647].
 #include <assert.h>
 #include <bitset>
 #include <string>
+#include <iostream>
 
-int solution(int N) {
-  int result = 0;
-  std::bitset<32> b(N);
-  std::string s(b.to_string());
-  s.erase(s.begin(), std::find(s.begin(), s.end(), '1'));
-  s = s.substr(0,s.find_last_of('1') + 1);
-  if (std::count(s.begin(), s.end(), '1') >= 2) {
-    int max = 0;
-    for (int i = 0; i < s.size(); i++) {
-      int local_max = 0;
-      for (int x = i + 1; x < s.size(); x++) {
-        if (s[i] == '1' && s[x] == '0') {
-          local_max++;
-        } else {
-          break;
+int solution(int N) 
+{
+    constexpr int SIZE = sizeof(N) * 8; // Assuming N is 32-bit integer
+    std::bitset<SIZE> binary(N);
+    int max_gap_count = 0;
+    int gap_count = 0;
+    bool count = false;
+
+    for (int i = 0; i < SIZE; ++i)
+    {
+        if (binary.test(i) && !count)
+        {
+            count = true;
         }
-      }
-      if (local_max > max) {
-        max = local_max;
-      }
+        else if (!binary.test(i) && count)
+        {
+            ++gap_count;
+        }
+        else if (binary.test(i) && count)
+        {
+            max_gap_count = std::max(gap_count, max_gap_count);
+            gap_count = 0;
+        }
     }
-    result = max;
-  }
 
-  return result;
+    return max_gap_count;
 }
 
-int main() {
-  assert(2 == solution(51712));
-  return 0;
+auto main() -> int
+{
+    assert(6 == solution(129));
+    assert(5 == solution(1376796946));
+    assert(4 == solution(529));
+    assert(5 == solution(1041));
+    assert(0 == solution(32));
+    assert(1 == solution(5));
+    return 0;
 }
