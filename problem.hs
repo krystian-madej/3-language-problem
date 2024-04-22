@@ -28,3 +28,13 @@ N is an integer within the range [1..2,147,483,647].
 
 -}
 
+import Data.Bits
+
+solution :: Int -> Int
+solution n = go n 0 0
+  where
+    go 0 maxGap _ = maxGap
+    go n maxGap currentGap =
+      if n .&. 1 == 1
+        then go (shiftR n 1) (max maxGap currentGap) 0
+        else go (shiftR n 1) maxGap (currentGap + 1)
