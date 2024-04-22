@@ -1,4 +1,4 @@
-/*
+{-
 
 A binary gap within a positive integer N is any maximal sequence of consecutive
 zeros that is surrounded by ones at both ends in the binary representation of N.
@@ -26,46 +26,5 @@ Write an efficient algorithm for the following assumptions:
 
 N is an integer within the range [1..2,147,483,647].
 
-*/
+-}
 
-#include <algorithm>
-#include <assert.h>
-#include <bitset>
-#include <string>
-#include <iostream>
-
-int solution(int N) 
-{
-    int max_gap = 0;
-    int current_gap = 0;
-
-    // Skip trailing zeros
-    while ((N & 1) == 0) {
-        N >>= 1;
-    }
-
-    while (N > 0) {
-        if (N & 1) {
-            // Update max_gap if current_gap is greater
-            max_gap = current_gap > max_gap ? current_gap : max_gap;
-            current_gap = 0;
-        } else {
-            current_gap++;
-        }
-        // Shift N to the right to check the next bit
-        N >>= 1;
-    }
-
-    return max_gap;
-}
-
-auto main() -> int
-{
-    assert(6 == solution(129));
-    assert(5 == solution(1376796946));
-    assert(4 == solution(529));
-    assert(5 == solution(1041));
-    assert(0 == solution(32));
-    assert(1 == solution(5));
-    return 0;
-}
